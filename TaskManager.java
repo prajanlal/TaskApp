@@ -1,4 +1,4 @@
-package Tava.java;
+package java;
 
 import java.util.ArrayList;
 import java.util.Scanner;
