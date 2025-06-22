@@ -24,13 +24,13 @@ public class Gui {
         tasks = new ArrayList<>();
 
         JFrame frame = new JFrame("Task Manager");
-        JTextField textField = new JTextField(20);
+        JTextField textField = new JTextField(25);
         frame.setSize(450, 450);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setLayout(new FlowLayout());
     
-        taskField = new JTextField(20);
+        taskField = new JTextField(25);
         frame.add(taskField);
 
         JButton addButton = new JButton("Add Task");
