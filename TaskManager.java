@@ -30,7 +30,7 @@ public class TaskManager {
             System.out.println("No tasks available.");
             return;
         }
-
+ 
         System.out.println("\nTask List:");
         for (Task task : tasks) {
             task.display();
@@ -48,12 +48,12 @@ public class TaskManager {
         }
     }
 
-    /* public void reminderTask() {
+     public void reminderTask() {
         if (tasks.addAll(tasks)) {
             System.out.println(" " + tasks);
         }
     }
-     */
+     
     public void startApp() {
         while (true) {
             System.out.println("\nTo-Do App:");
