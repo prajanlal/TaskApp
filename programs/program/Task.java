@@ -1,4 +1,4 @@
-package java;
+package programs.program;
 
 public class Task {
 

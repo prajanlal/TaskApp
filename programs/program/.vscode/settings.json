@@ -1,0 +1,7 @@
+{
+    "java.project.sourcePaths": [
+        "programs",
+        "programs"
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
+}
