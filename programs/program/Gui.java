@@ -17,6 +17,6 @@ public class Gui {
        frame.setTitle("Our GUI");
        frame.setSize(2000, 3000);
        frame.setVisible(true);
-       
+    
     }
 }
