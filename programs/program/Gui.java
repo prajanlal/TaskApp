@@ -1,88 +1,105 @@
 package programs.program;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class Gui extends JFrame {
-    private DefaultListModel<String> taskListModel;
-    private JList<String> taskList;
-    private JTextField taskNameField;
-    private JTextArea taskDescArea;
+    private TaskManager taskManager;
+    private JTextField nameField;
+    private JComboBox<String> statusBox;
+    private JCheckBox importantBox;
+    private JTextArea taskDisplayArea;
+    private JTextField deleteField;
 
     public void TaskManagerGUI() {
-        setTitle("Task Management System");
-        setSize(500, 400);
+        taskManager = new TaskManager(); 
+
+        setTitle("Task Manager GUI");
+        setSize(500, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        taskListModel = new DefaultListModel<>();
-        taskList = new JList<>(taskListModel);
+        
+        JPanel inputPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        nameField = new JTextField();
+        statusBox = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
+        importantBox = new JCheckBox("Important");
 
-        taskNameField = new JTextField(20);
-        taskDescArea = new JTextArea(3, 20);
-        taskDescArea.setLineWrap(true);
-        taskDescArea.setWrapStyleWord(true);
+        inputPanel.add(new JLabel("Task Name:"));
+        inputPanel.add(nameField);
+        inputPanel.add(new JLabel("Status:"));
+        inputPanel.add(statusBox);
+        inputPanel.add(new JLabel("Important:"));
+        inputPanel.add(importantBox);
 
         JButton addButton = new JButton("Add Task");
-        JButton deleteButton = new JButton("Delete Selected");
-
-        addButton.addActionListener(e -> addTask());
-        deleteButton.addActionListener(e -> deleteTask());
-
-        JPanel inputPanel = new JPanel(new GridLayout(5, 1));
-        inputPanel.add(new JLabel("Task Name:"));
-        inputPanel.add(taskNameField);
-        inputPanel.add(new JLabel("Task Description:"));
-        inputPanel.add(new JScrollPane(taskDescArea));
         inputPanel.add(addButton);
 
-        JPanel listPanel = new JPanel(new BorderLayout());
-        listPanel.add(new JScrollPane(taskList), BorderLayout.CENTER);
-        listPanel.add(deleteButton, BorderLayout.SOUTH);
+        
+        taskDisplayArea = new JTextArea();
+        taskDisplayArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(taskDisplayArea);
 
-        setLayout(new BorderLayout());
+        
+        JPanel deletePanel = new JPanel(new FlowLayout());
+        deleteField = new JTextField(15);
+        JButton deleteButton = new JButton("Delete Task");
+        deletePanel.add(new JLabel("Task Name to Delete:"));
+        deletePanel.add(deleteField);
+        deletePanel.add(deleteButton);
+
+
         add(inputPanel, BorderLayout.NORTH);
-        add(listPanel, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
+        add(deletePanel, BorderLayout.SOUTH);
+
+        
+        addButton.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            String status = (String) statusBox.getSelectedItem();
+            boolean important = importantBox.isSelected();
+
+            if (!name.isEmpty()) {
+                taskManager.tasks.add(new Task(name, status, important));
+                updateTaskDisplay();
+                nameField.setText("");
+                importantBox.setSelected(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Task name cannot be empty.");
+            }
+        });
+
+        deleteButton.addActionListener(e -> {
+            String nameToDelete = deleteField.getText().trim();
+            if (!nameToDelete.isEmpty()) {
+                boolean removed = taskManager.tasks.removeIf(task -> task.getName().equalsIgnoreCase(nameToDelete));
+                if (removed) {
+                    JOptionPane.showMessageDialog(this, "Task deleted.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Task not found.");
+                }
+                updateTaskDisplay();
+                deleteField.setText("");
+            }
+        });
+
+        updateTaskDisplay();
     }
 
-    private void addTask() {
-        String name = taskNameField.getText().trim();
-        String desc = taskDescArea.getText().trim();
-        if (!name.isEmpty()) {
-            taskListModel.addElement(name + " - " + desc);
-            taskNameField.setText("");
-            taskDescArea.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this, "Task name cannot be empty.");
+    private void updateTaskDisplay() {
+        StringBuilder sb = new StringBuilder();
+        for (Task task : taskManager.tasks) {
+            sb.append("Name: ").append(task.getName()).append("\n");
+            sb.append("Status: ").append(task.getStatus()).append("\n");
+            sb.append("Important: ").append(task.getimportant()).append("\n");
+            sb.append("-----------------------------\n");
         }
-    }
-
-    private void deleteTask() {
-        int selectedIndex = taskList.getSelectedIndex();
-        if (selectedIndex != -1) {
-            taskListModel.remove(selectedIndex);
-        } else {
-            JOptionPane.showMessageDialog(this, "Please select a task to delete.");
-        }
+        taskDisplayArea.setText(sb.toString());
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Gui().setVisible(true));
     }
 }
-   
