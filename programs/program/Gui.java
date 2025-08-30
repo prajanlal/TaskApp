@@ -5,15 +5,17 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Gui extends JFrame {
-    private TaskManager taskManager;
-    private JTextField nameField;
-    private JComboBox<String> statusBox;
-    private JCheckBox importantBox;
-    private JTextArea taskDisplayArea;
-    private JTextField deleteField;
+public static void main(String[] args) {
+    
+    TaskManager taskManager;
+    JTextField nameField;
+    JComboBox<String> statusBox;
+    JCheckBox importantBox;
+    JTextArea taskDisplayArea;
+    JTextField deleteField;
 
     public void TaskManagerGUI() {
-        taskManager = new TaskManager(); 
+        TaskManager taskmanager = new TaskManager();
 
         setTitle("Task Manager GUI");
         setSize(500, 500);
@@ -21,7 +23,6 @@ public class Gui extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        
         JPanel inputPanel = new JPanel(new GridLayout(5, 2, 5, 5));
         nameField = new JTextField();
         statusBox = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
@@ -50,12 +51,10 @@ public class Gui extends JFrame {
         deletePanel.add(deleteField);
         deletePanel.add(deleteButton);
 
-
         add(inputPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(deletePanel, BorderLayout.SOUTH);
 
-        
         addButton.addActionListener(e -> {
             String name = nameField.getText().trim();
             String status = (String) statusBox.getSelectedItem();
@@ -102,4 +101,5 @@ public class Gui extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Gui().setVisible(true));
     }
+}
 }
